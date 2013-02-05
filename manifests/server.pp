@@ -61,12 +61,31 @@ class rabbitmq::server(
   $ssl_cert='',
   $ssl_key='',
   $ssl_stomp_port='6164',
+  $ldap_auth=false,
+  $ldap_server='ldap',
+  $ldap_user_dn_pattern='cn=${username},ou=People,dc=example,dc=com',
+  $ldap_use_ssl=false,
+  $ldap_port='389',
+  $ldap_log=false,
 ) {
 
   validate_bool($delete_guest_user, $config_stomp)
   validate_re($port, '\d+')
   validate_re($stomp_port, '\d+')
   validate_re($ssl_stomp_port, '\d+')
+
+  validate_bool($ldap_auth)
+  validate_string($ldap_server)
+  validate_string($ldap_user_dn_pattern)
+  validate_bool($ldap_use_ssl)
+  validate_re($ldap_port, '\d+')
+  validate_bool($ldap_log)
+
+  if ($ldap_auth) {
+    rabbitmq_plugin { 'rabbitmq_auth_backend_ldap':
+      ensure => present,
+    }
+  }
 
   if $version == 'UNSET' {
     $version_real = '2.4.1'
