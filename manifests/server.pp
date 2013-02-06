@@ -29,6 +29,12 @@
 #  [*ssl_cert*] - the certificate for SSL connections
 #  [*ssl_key*] - the private key for SSL connections
 #  [*ssl_stomp_port*] - ssl port stomp should be listening on
+#  [*ldap_auth*] - whether to use LDAP for authentication
+#  [*ldap_server*] - the LDAP server to use for authentication
+#  [*ldap_user_dn_pattern*] - the DN to use for user authentication with LDAP
+#  [*ldap_use_ssl*] - whether to use SSL for LDAP authentication
+#  [*ldap_port*] - the LDAP port to use
+#  [*ldap_log*] - LDAP authentication log level
 # Requires:
 #  stdlib
 # Sample Usage:
