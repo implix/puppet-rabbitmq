@@ -1,7 +1,15 @@
 Puppet::Type.type(:rabbitmq_plugin).provide(:rabbitmqplugins) do
 
-  commands :rabbitmqplugins => 'rabbitmq-plugins'
   defaultfor :feature => :posix
+
+  # Fix Puppet 3.0 #16779, pass $HOME to rabbit command.
+  if Puppet::Util::Package.versioncmp(Puppet.version, '3.0') >= 0
+    has_command(:rabbitmqplugins, 'rabbitmq-plugins') do
+      environment 'HOME' => Puppet[:vardir]
+    end
+  else
+    commands :rabbitmqplugins => 'rabbitmq-plugins'
+  end
 
   def self.instances
     rabbitmqplugins('list', '-E').split(/\n/).map do |line|

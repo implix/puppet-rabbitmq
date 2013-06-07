@@ -6,6 +6,7 @@
 #  [*port*] - port where rabbitmq server is hosted
 #  [*delete_guest_user*] - rather or not to delete the default user
 #  [*version*] - version of rabbitmq-server to install
+#  [*include_package*] - whether to manage the RabbitMQ pachage
 #  [*package_name*] - name of rabbitmq package
 #  [*service_name*] - name of rabbitmq service
 #  [*service_ensure*] - desired ensure state for service
@@ -46,6 +47,7 @@
 class rabbitmq::server(
   $port = '5672',
   $delete_guest_user = false,
+  $include_package = true,
   $package_name = 'rabbitmq-server',
   $version = 'UNSET',
   $service_name = 'rabbitmq-server',
@@ -113,9 +115,11 @@ class rabbitmq::server(
 
   $plugin_dir = "/usr/lib/rabbitmq/lib/rabbitmq_server-${version_real}/plugins"
 
-  package { $package_name:
-    ensure => $pkg_ensure_real,
-    notify => Class['rabbitmq::service'],
+  if $include_package {
+    package { $package_name:
+      ensure => $pkg_ensure_real,
+      notify => Class['rabbitmq::service'],
+    }
   }
 
   file { '/etc/rabbitmq':
