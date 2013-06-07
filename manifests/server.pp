@@ -30,6 +30,7 @@
 #  [*ssl_cert*] - the certificate for SSL connections
 #  [*ssl_key*] - the private key for SSL connections
 #  [*ssl_stomp_port*] - ssl port stomp should be listening on
+#  [*ssl_management_port*] - ssl port management should be listening on
 #  [*ldap_auth*] - whether to use LDAP for authentication
 #  [*ldap_server*] - the LDAP server to use for authentication
 #  [*ldap_user_dn_pattern*] - the DN to use for user authentication with LDAP
@@ -69,6 +70,7 @@ class rabbitmq::server(
   $ssl_cert='',
   $ssl_key='',
   $ssl_stomp_port='6164',
+  $ssl_management_port='55673',
   $ldap_auth=false,
   $ldap_server='ldap',
   $ldap_user_dn_pattern='cn=${username},ou=People,dc=example,dc=com',
@@ -207,15 +209,14 @@ class rabbitmq::server(
   }
 
   exec { 'Download rabbitmqadmin':
-    command => "curl http://${default_user}:${default_pass}@localhost:5${port}/cli/rabbitmqadmin -o /var/tmp/rabbitmqadmin",
-    creates => '/var/tmp/rabbitmqadmin',
+    command => "curl https://${default_user}:${default_pass}@localhost:5${ssl_management_port}/cli/rabbitmqadmin -o /var/tmp/rabbitmqadmin",
+    creates => '/usr/local/bin/rabbitmqadmin',
     require => Rabbitmq_plugin['rabbitmq_management'],
   }
 
   file { '/usr/local/bin/rabbitmqadmin':
     owner   => 'root',
     group   => 'root',
-    source  => '/var/tmp/rabbitmqadmin',
     mode    => '0755',
     require => Exec['Download rabbitmqadmin'],
   }
