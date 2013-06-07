@@ -198,27 +198,25 @@ class rabbitmq::server(
     # delete the default guest user
     rabbitmq_user{ 'guest':
       ensure   => absent,
-      provider => 'rabbitmqctl',
     }
   }
 
-  rabbitmq_plugin { 'rabbitmq_management':
-    ensure   => present,
-    provider => 'rabbitmqplugins',
-    notify   => Class['rabbitmq::service'],
-  }
+  #rabbitmq_plugin { 'rabbitmq_management':
+  #  ensure   => present,
+  #  notify   => Class['rabbitmq::service'],
+  #}
 
-  exec { 'Download rabbitmqadmin':
-    command => "curl https://${default_user}:${default_pass}@localhost:5${ssl_management_port}/cli/rabbitmqadmin -o /var/tmp/rabbitmqadmin",
-    creates => '/usr/local/bin/rabbitmqadmin',
-    require => Rabbitmq_plugin['rabbitmq_management'],
-  }
+  #exec { 'Download rabbitmqadmin':
+  #  command => "/usr/bin/curl -k https://${default_user}:${default_pass}@localhost:${ssl_management_port}/cli/rabbitmqadmin -o /usr/local/bin/rabbitmqadmin",
+  #  creates => '/usr/local/bin/rabbitmqadmin',
+  #  require => Rabbitmq_plugin['rabbitmq_management'],
+  #}
 
-  file { '/usr/local/bin/rabbitmqadmin':
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0755',
-    require => Exec['Download rabbitmqadmin'],
-  }
+  #file { '/usr/local/bin/rabbitmqadmin':
+  #  owner   => 'root',
+  #  group   => 'root',
+  #  mode    => '0755',
+  #  require => Exec['Download rabbitmqadmin'],
+  #}
 
 }
